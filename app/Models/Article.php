@@ -22,7 +22,7 @@ class Article extends Model
     {
         if (auth()->check() && !auth()->user()->is_admin && !auth()->user()->is_publisher) {
             static::addGlobalScope('user', function (Builder $builder) {
-                $builder->where('user_id', auth()->id());
+                // $builder->where('user_id', auth()->id());
             });
         }
     }

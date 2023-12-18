@@ -47,9 +47,9 @@
                                             <a href="{{ url('articles/' . $article->id)}}">{{ $article->title}}</a>
                                         </td>								
                                         <td>{{ $article->category_id}}</td>
-                                        @if (auth()->user()->is_admin)
+                                        @can('manage-categories')
                                             <td>{{ $article->user->name }}</td>
-                                        @endif	
+                                        @endcan                                            
                                         <td>{{  $article->created_at }}</td>
                                         <td>{{  $article->published_at }}</td>
                                         <td class="flex-row"> 

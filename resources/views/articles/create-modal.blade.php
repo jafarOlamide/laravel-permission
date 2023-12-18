@@ -26,14 +26,15 @@
                     </select>                
                 </div>
 
-                @if (auth()->user()->is_admin || auth()->user()->is_publisher)
+                @can('publish-article')
                   <div class="mb-3">
                     <input class="form-check-input" type="checkbox" name="published" id="published" value="1">  
                     <label class="form-check-label" for="published">
                     Published
                     </label>                          
                   </div>
-                @endif
+                @endcan
+                 
 
                 
             </div>

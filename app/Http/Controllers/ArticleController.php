@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ArticleController extends Controller
 {
@@ -44,7 +45,7 @@ class ArticleController extends Controller
             'full_text'     => $request->full_text,
             'category_id'   => $request->category_id,
             'user_id'       => auth()->id(),
-            'published_at'  => auth()->user()->is_publisher || auth()->user()->is_admin && $request->published ? now() : null
+            'published_at'  => Gate::allows('publish-article') && $request->published ? now() : null
         ]);
 
         return redirect(route('articles.index'));
@@ -84,9 +85,10 @@ class ArticleController extends Controller
     {
         $data = $request->all();
 
-        if (auth()->user()->is_admin || auth()->user()->is_publisher) {
+        if (Gate::allows('publish-article')) {
             $data['published_at'] = $request->input('published') ? now() : null;
         }
+
         $article->update($data);
 
         return redirect()->route('articles.index');
