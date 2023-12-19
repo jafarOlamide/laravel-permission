@@ -40,11 +40,13 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        $organization_id = auth()->user()->organization_id ? auth()->user()->organization_id : auth()->id();
+
         Article::create([
             'title'         => $request->title,
             'full_text'     => $request->full_text,
             'category_id'   => $request->category_id,
-            'user_id'       => auth()->id(),
+            'user_id'       => $organization_id,
             'published_at'  => Gate::allows('publish-article') && $request->published ? now() : null
         ]);
 
@@ -70,6 +72,7 @@ class ArticleController extends Controller
      */
     public function edit(Article $article)
     {
+        $this->authorize('update', $article);
         $categories = Category::all();
         return view('articles.edit', compact('article', 'categories'));
     }
@@ -83,6 +86,7 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+        $this->authorize('update', $article);
         $data = $request->all();
 
         if (Gate::allows('publish-article')) {
@@ -102,6 +106,10 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        $this->authorize('update', $article);
+
+        $article->delete();
+
+        return redirect()->route('articles.index');
     }
 }

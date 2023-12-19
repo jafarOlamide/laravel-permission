@@ -22,7 +22,8 @@ class Article extends Model
     {
         if (auth()->check() && !auth()->user()->is_admin && !auth()->user()->is_publisher) {
             static::addGlobalScope('user', function (Builder $builder) {
-                // $builder->where('user_id', auth()->id());
+                $organization_id = auth()->user()->organization_id ? auth()->user()->organization_id : auth()->id();
+                $builder->where('user_id', $organization_id);
             });
         }
     }
