@@ -46,6 +46,15 @@ class User extends Authenticatable
     ];
 
 
+    public function getRoleIdAttribute()
+    {
+        if (session('organization_role_id')) {
+            return session('organization_role_id');
+        }
+
+        return $this->attributes['role_id'];
+    }
+
     public function getIsAdminAttribute()
     {
         return $this->role_id == 2;
@@ -58,7 +67,7 @@ class User extends Authenticatable
 
     public function organizations()
     {
-        return $this->belongsToMany(User::class, 'organization_user', 'user_id', 'organization_id');
+        return $this->belongsToMany(User::class, 'organization_user', 'user_id', 'organization_id')->withPivot(['role_id']);
     }
 
 
